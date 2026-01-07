@@ -1,0 +1,93 @@
+// Design system deviation - custom border for card visibility
+.rule-validation-card.card {
+  border: 1px solid #d8dfe6; // Figma: 1px solid #d8dfe6 (Bootstrap default is transparent)
+  width: 100%; // Full width responsive container
+}
+
+// Design system deviation - custom padding and background for header
+.rule-validation-card .card-header {
+  padding: 8px 20px 8px 0; // Figma: asymmetric padding (8px 20px 8px 0px) - not in Bootstrap scale
+  background-color: #f7f8fa; // Figma: #f7f8fa (lighter variant than default)
+  border-bottom: 1px solid #d8dfe6; // Figma: visual separation between header and body
+  gap: 8px; // Figma: 8px gap between flex items
+  height: 46px; // Figma: 46px fixed height
+}
+
+// Custom element - header title wrapper with left padding
+.header-title-wrapper {
+  flex: 1 0 0; // Figma: flex-grow to fill available space
+  padding-left: 20px; // Figma: 20px left padding (not in Bootstrap scale)
+}
+
+// Custom element - header title typography
+.header-title-wrapper h3 {
+  font-size: 14px; // Figma: 14px (Bootstrap default, no utility needed)
+  line-height: 21px; // Figma: 21px custom line-height
+  color: #05152a; // Figma: primary text color
+}
+
+// Custom element - feedback buttons container
+.feedback-buttons {
+  gap: 8px; // Figma: 8px gap between buttons
+  width: 60px; // Figma: 60px total width for button group
+  height: 30px; // Figma: 30px height
+}
+
+// Custom element - individual feedback button styling
+.feedback-button {
+  width: 26px; // Figma: 26px button size
+  height: 26px; // Figma: 26px button size
+  padding: 2px; // Figma: 2px internal padding
+  border: none;
+  background-color: transparent;
+  border-radius: 999px; // Figma: fully rounded buttons
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  &:active {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  span {
+    font-size: 16px; // Figma: 16px icon size
+    color: #304258; // Figma: secondary text color for icons
+  }
+}
+
+// Design system deviation - remove default padding from card-body
+.rule-validation-card .card-body {
+  padding: 0; // Figma: 0px (padding applied to individual rule items instead)
+  display: grid; // Figma: grid layout for stacked items
+  grid-template-columns: 1fr; // Full width columns
+}
+
+// Custom element - individual rule item styling
+.rule-item {
+  padding: 12px 20px; // Figma: 12px 20px (not in Bootstrap scale)
+  gap: 2px; // Figma: 2px gap between title and description
+  background-color: white; // Figma: white background
+
+  
+    border-bottom: 1px solid #d8dfe6; // Figma: separator between rule items
+  
+}
+
+// Custom element - rule title typography
+.rule-title {
+  font-size: 14px; // Figma: 14px (Bootstrap default)
+  line-height: 21px; // Figma: 21px custom line-height
+  color: #05152a; // Figma: primary text color
+}
+
+// Custom element - rule description typography
+.rule-description {
+  font-size: 12px; // Figma: 12px (var(--font-size/x-small))
+  line-height: 18px; // Figma: 18px custom line-height
+  color: #304258; // Figma: secondary text color
+}
