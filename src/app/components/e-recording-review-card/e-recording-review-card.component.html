@@ -1,0 +1,523 @@
+<div class="card feedback-card h-100">
+    <div class="card-header py-5">
+        <h2 class="card-title">E-Recording Package Review</h2>
+    </div>
+    <div class="card-body">
+        <div class="container-simplifile">
+
+            <div class="d-flex align-items-start justify-content-start gap-3">
+
+                <div class="col">
+                    <label for="stateSelect" class="required-field">State</label>
+                    <select id="stateSelect" class="form-select" required [(ngModel)]="selectedState"
+                        (ngModelChange)="onStateChange()">
+                        <option value="">Select</option>
+                        <option value="CA">California</option>
+                        <option value="MD">Maryland</option>
+                    </select>
+                </div>
+
+                <div class="col">
+                    <label for="countySelect" class="required-field">County</label>
+                    <select id="countySelect" class="form-select" required [(ngModel)]="selectedCounty"
+                        (ngModelChange)="onCountyChange()">
+                        <option value="">Select</option>
+                        <option *ngFor="let county of countyOptions" [value]="county.key">{{ county.label }}</option>
+                    </select>
+                </div>
+
+                <div class="col">
+                    <label for="accountSelect" class="required-field">Account</label>
+                    <select id="accountSelect" class="form-select" required [(ngModel)]="selectedAccount">
+                        <option value="">Select</option>
+                        <option value="1">Penny Mac Lender</option>
+                    </select>
+                </div>
+
+                <div class="col">
+                    <label for="packageNameInput" class="required-field">Package Name</label>
+                    <input type="text" id="packageNameInput" class="form-control" required [(ngModel)]="packageName">
+                </div>
+
+            </div>
+
+            <div>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <ng-container *ngIf="docTabs.length > 0; else defaultTabs">
+                            <div
+                                *ngFor="let tab of docTabs"
+                                class="tab-item"
+                                [class.tab-item--active]="tab === selectedDocType"
+                                (click)="selectDocTab(tab)"
+                            >{{ tab }}</div>
+                        </ng-container>
+                        <ng-template #defaultTabs>
+                            <div class="tab-item">DOCUMENT #1</div>
+                            <div class="tab-item">DOCUMENT #2</div>
+                            <div class="tab-item">DOCUMENT #3</div>
+                            <div class="tab-item">DOCUMENT #4</div>
+                        </ng-template>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="icon-chevron-left text-primary t-18" aria-hidden="true"></span>
+                        <span class="icon-chevron-right text-primary t-18" aria-hidden="true"></span>
+                    </div>
+                </div>
+                <hr class="mt-0 mb-0">
+            </div>
+
+            <div class="d-flex gap-2 align-items-center w-100">
+                <div class="flex flex-col justify-content-start flex-grow-1">
+                    <div class="">
+                        <label for="docTypeSelect" class="required-field">Doc type</label>
+                        <select id="docTypeSelect" class="form-select" [(ngModel)]="selectedDocType"
+                            (ngModelChange)="onDocTypeChange()">
+                            <option value="">Select</option>
+                            <option *ngFor="let instrument of docTypeOptions" [value]="instrument">{{ instrument }}
+                            </option>
+                        </select>
+                    </div>
+                    <a href="#" class="source-link" (click)="onSourceClick($event)">SOURCE</a>
+                </div>
+
+                <div class="flex flex-col justify-content-start flex-grow-1">
+                    <div class="flex-grow-1">
+                        <label for="docNameInput" class="required-field">Doc name</label>
+                        <input type="text" id="docNameInput" class="form-control" [(ngModel)]="docName">
+                    </div>
+                    <a href="#" class="source-link" (click)="onSourceClick($event)">SOURCE</a>
+                </div>
+            </div>
+
+            <ng-container *ngIf="helperDocRequirements.length > 0">
+                <div *ngFor="let req of helperDocRequirements">
+                    <label class="d-block mb-1">{{ req.label }}</label>
+                    <div class="file-attachment-list border">
+                        <ng-container *ngIf="helperDocFiles[req.label]?.length">
+                            <ng-container *ngFor="let file of helperDocFiles[req.label]; let i = index">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="icon-attachment t-18 text-primary" aria-hidden="true"></span>
+                                        <span class="source-link-big">{{ file }}</span>
+                                    </div>
+                                    <button type="button" class="btn btn-link p-0"
+                                        (click)="removeHelperDoc(req.label, i)">
+                                        <span class="icon-trash t-18 text-danger" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                                <hr class="m-0">
+                            </ng-container>
+                        </ng-container>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span class="source-link-big text-muted"
+                                *ngIf="!helperDocFiles[req.label]?.length">No file chosen</span>
+                            <label [for]="'helper-doc-' + req.label"
+                                class="d-flex align-items-center gap-1 text-primary pcor-upload-label mb-0">
+                                <span class="icon-add t-18" aria-hidden="true"></span>
+                                <span class="source-link">ATTACH</span>
+                            </label>
+                            <input type="file" [id]="'helper-doc-' + req.label" class="d-none" accept=".pdf,.doc,.docx"
+                                multiple (change)="onHelperDocSelected(req.label, $event)">
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+
+            <div *ngIf="selectedDocType" class="d-flex flex-column gap-3">
+
+                <ng-container *ngFor="let req of partyArrayRequirements">
+                    <div class="party-array-section">
+
+                        <!-- Section header: title + COPY + ADD -->
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span class="party-section-title required-field">{{ req.label }}</span>
+                            <div class="d-flex align-items-center gap-3">
+                                <button type="button" class="btn btn-link p-0 party-action-btn">
+                                    <span class="icon-copy t-16 text-primary" aria-hidden="true"></span>
+                                    <span class="source-link">COPY</span>
+                                </button>
+                                <button type="button" class="btn btn-link p-0 party-action-btn"
+                                    (click)="addPartyEntry(req.path!)">
+                                    <span class="icon-add t-16 text-primary" aria-hidden="true"></span>
+                                    <span class="source-link">ADD</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Entries -->
+                        <ng-container *ngFor="let entry of getPartyEntries(req.path!); let i = index">
+                            <hr *ngIf="i > 0" class="my-0">
+
+                            <!-- Entry row: #N + trash -->
+                            <div class="d-flex align-items-center justify-content-between">
+                                <span class="party-entry-number">#{{ i + 1 }}</span>
+                                <button *ngIf="getPartyEntries(req.path!).length > 1" type="button"
+                                    class="btn btn-link text-danger p-0"
+                                    (click)="removePartyEntry(req.path!, i)">
+                                    <span class="icon-trash t-18" aria-hidden="true"></span>
+                                </button>
+                            </div>
+
+                            <!-- Individual layout -->
+                            <ng-container *ngIf="entry.type !== 'Organization'">
+                                <!-- Row 1: Type | First | Middle | Last -->
+                                <div class="d-flex gap-3">
+                                    <div class="flex-fill">
+                                        <label class="required-field">Type</label>
+                                        <select class="form-select"
+                                            [(ngModel)]="partyArrays[req.path!][i].type"
+                                            [name]="req.path + '-type-' + i">
+                                            <option value="">Select</option>
+                                            <option value="Individual">Individual</option>
+                                            <option value="Organization">Organization</option>
+                                        </select>
+                                        <a href="#" class="source-link" (click)="onSourceClick($event)">SOURCE</a>
+                                    </div>
+                                    <ng-container *ngIf="entry.type === 'Individual'">
+                                        <div class="flex-fill">
+                                            <label class="required-field">First</label>
+                                            <input type="text" class="form-control"
+                                                [(ngModel)]="partyArrays[req.path!][i].firstName"
+                                                [name]="req.path + '-first-' + i">
+                                            <a href="#" class="source-link" (click)="onSourceClick($event)">SOURCE</a>
+                                        </div>
+                                        <div class="flex-fill">
+                                            <label>Middle</label>
+                                            <input type="text" class="form-control"
+                                                [(ngModel)]="partyArrays[req.path!][i].middleName"
+                                                [name]="req.path + '-middle-' + i">
+                                        </div>
+                                        <div class="flex-fill">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <label class="required-field mb-0">Last</label>
+                                                <span *ngIf="entry.lastName === entry.aiSuggestedLastName" class="ai-conf-tag">LOW-CONF</span>
+                                                <button *ngIf="entry.lastName !== entry.aiSuggestedLastName"
+                                                    type="button" class="ai-undo-btn"
+                                                    (click)="entry.lastName = entry.aiSuggestedLastName!">
+                                                    <span class="icon-history t-16" aria-hidden="true"></span>
+                                                    UNDO
+                                                </button>
+                                            </div>
+                                            <input type="text" class="form-control ai-prefilled"
+                                                [(ngModel)]="partyArrays[req.path!][i].lastName"
+                                                [name]="req.path + '-last-' + i">
+                                            <a href="#" class="source-link" (click)="onSourceClick($event)">SOURCE</a>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                                <!-- Row 2: Suffix | Role (only when Individual selected) -->
+                                <div *ngIf="entry.type === 'Individual'" class="d-flex gap-3">
+                                    <div class="party-field-narrow">
+                                        <label>Suffix</label>
+                                        <input type="text" class="form-control"
+                                            [(ngModel)]="partyArrays[req.path!][i].nameSuffix"
+                                            [name]="req.path + '-suffix-' + i">
+                                    </div>
+                                    <div class="party-field-narrow">
+                                        <label class="required-field">Role</label>
+                                        <select class="form-select"
+                                            [(ngModel)]="partyArrays[req.path!][i].capacity"
+                                            [name]="req.path + '-capacity-' + i">
+                                            <option value="">Select</option>
+                                            <option *ngFor="let role of partyRoles" [value]="role">{{ role }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </ng-container>
+
+                            <!-- Organization layout -->
+                            <ng-container *ngIf="entry.type === 'Organization'">
+                                <!-- Row 1: Type | Name -->
+                                <div class="d-flex gap-3">
+                                    <div class="flex-fill">
+                                        <label class="required-field">Type</label>
+                                        <select class="form-select"
+                                            [(ngModel)]="partyArrays[req.path!][i].type"
+                                            [name]="req.path + '-type-' + i">
+                                            <option value="">Select</option>
+                                            <option value="Individual">Individual</option>
+                                            <option value="Organization">Organization</option>
+                                        </select>
+                                        <a href="#" class="source-link" (click)="onSourceClick($event)">SOURCE</a>
+                                    </div>
+                                    <div class="flex-fill">
+                                        <label class="required-field">Name</label>
+                                        <input type="text" class="form-control"
+                                            [(ngModel)]="partyArrays[req.path!][i].nameUnparsed"
+                                            [name]="req.path + '-name-' + i">
+                                        <a href="#" class="source-link" (click)="onSourceClick($event)">SOURCE</a>
+                                    </div>
+                                </div>
+                                <!-- Row 2: Role -->
+                                <div class="d-flex gap-3">
+                                    <div class="party-field-narrow">
+                                        <label class="required-field">Role</label>
+                                        <select class="form-select"
+                                            [(ngModel)]="partyArrays[req.path!][i].capacity"
+                                            [name]="req.path + '-capacity-' + i">
+                                            <option value="">Select</option>
+                                            <option *ngFor="let role of partyRoles" [value]="role">{{ role }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </ng-container>
+
+                        </ng-container>
+
+                    </div>
+                </ng-container>
+
+                <ng-container *ngFor="let req of refInfoRequirements">
+                    <div class="party-array-section">
+
+                        <!-- Section header: title + COPY + ADD -->
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span class="party-section-title required-field">{{ req.label }}</span>
+                            <div class="d-flex align-items-center gap-3">
+                                <button type="button" class="btn btn-link p-0 party-action-btn">
+                                    <span class="icon-copy t-16 text-primary" aria-hidden="true"></span>
+                                    <span class="source-link">COPY</span>
+                                </button>
+                                <button type="button" class="btn btn-link p-0 party-action-btn"
+                                    (click)="addRefInfoEntry(req.path!)">
+                                    <span class="icon-add t-16 text-primary" aria-hidden="true"></span>
+                                    <span class="source-link">ADD</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Entries -->
+                        <ng-container *ngFor="let entry of getRefInfoEntries(req.path!); let i = index">
+                            <hr *ngIf="i > 0" class="my-0">
+
+                            <!-- Entry row: #N + trash -->
+                            <div class="d-flex align-items-center justify-content-between">
+                                <span class="party-entry-number">#{{ i + 1 }}</span>
+                                <button *ngIf="getRefInfoEntries(req.path!).length > 1" type="button"
+                                    class="btn btn-link text-danger p-0"
+                                    (click)="removeRefInfoEntry(req.path!, i)">
+                                    <span class="icon-trash t-18" aria-hidden="true"></span>
+                                </button>
+                            </div>
+
+                            <!-- Fields: Book | Page -->
+                            <div class="d-flex gap-3">
+                                <div class="flex-fill">
+                                    <label>Book</label>
+                                    <input type="text" class="form-control" maxlength="5"
+                                        [(ngModel)]="refInfoArrays[req.path!][i].book"
+                                        [name]="req.path + '-book-' + i" placeholder="Up to 5 digits">
+                                    <a href="#" class="source-link" (click)="onSourceClick($event)">SOURCE</a>
+                                </div>
+                                <div class="flex-fill">
+                                    <label>Page</label>
+                                    <input type="text" class="form-control" maxlength="4"
+                                        [(ngModel)]="refInfoArrays[req.path!][i].page"
+                                        [name]="req.path + '-page-' + i" placeholder="Up to 4 digits">
+                                    <a href="#" class="source-link" (click)="onSourceClick($event)">SOURCE</a>
+                                </div>
+                            </div>
+
+                        </ng-container>
+
+                    </div>
+                </ng-container>
+
+                <ng-container *ngFor="let req of legalDescRequirements">
+                    <div class="party-array-section">
+
+                        <!-- Section header: title + COPY + ADD -->
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span class="party-section-title required-field">{{ req.label }}</span>
+                            <div class="d-flex align-items-center gap-3">
+                                <button type="button" class="btn btn-link p-0 party-action-btn">
+                                    <span class="icon-copy t-16 text-primary" aria-hidden="true"></span>
+                                    <span class="source-link">COPY</span>
+                                </button>
+                                <button *ngIf="getLegalDescEntries(req.path!).length < legalDescMax"
+                                    type="button" class="btn btn-link p-0 party-action-btn"
+                                    (click)="addLegalDescEntry(req.path!)">
+                                    <span class="icon-add t-16 text-primary" aria-hidden="true"></span>
+                                    <span class="source-link">ADD ({{ getLegalDescEntries(req.path!).length }}/{{ legalDescMax }})</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Entries -->
+                        <ng-container *ngFor="let entry of getLegalDescEntries(req.path!); let i = index">
+                            <hr *ngIf="i > 0" class="my-0">
+
+                            <!-- Entry row: #N + trash -->
+                            <div class="d-flex align-items-center justify-content-between">
+                                <span class="party-entry-number">#{{ i + 1 }}</span>
+                                <button *ngIf="getLegalDescEntries(req.path!).length > 1" type="button"
+                                    class="btn btn-link text-danger p-0"
+                                    (click)="removeLegalDescEntry(req.path!, i)">
+                                    <span class="icon-trash t-18" aria-hidden="true"></span>
+                                </button>
+                            </div>
+
+                            <!-- Row 1: District | Property ID | Premise Address | City -->
+                            <div class="d-flex gap-3">
+                                <div class="flex-fill">
+                                    <label class="required-field">District</label>
+                                    <input type="text" class="form-control" maxlength="2"
+                                        [(ngModel)]="legalDescArrays[req.path!][i].blockNumber"
+                                        [name]="req.path + '-district-' + i" placeholder="##">
+                                    <a href="#" class="source-link" (click)="onSourceClick($event)">SOURCE</a>
+                                </div>
+                                <div class="flex-fill">
+                                    <label class="required-field">Property ID</label>
+                                    <input type="text" class="form-control" maxlength="7"
+                                        [(ngModel)]="legalDescArrays[req.path!][i].parcelId"
+                                        [name]="req.path + '-parcel-' + i" placeholder="#######">
+                                    <a href="#" class="source-link" (click)="onSourceClick($event)">SOURCE</a>
+                                </div>
+                                <div class="flex-fill">
+                                    <label class="required-field">Premise Address</label>
+                                    <input type="text" class="form-control"
+                                        [(ngModel)]="legalDescArrays[req.path!][i].addressStreet"
+                                        [name]="req.path + '-street-' + i">
+                                    <a href="#" class="source-link" (click)="onSourceClick($event)">SOURCE</a>
+                                </div>
+                                <div class="flex-fill">
+                                    <label class="required-field">City</label>
+                                    <input type="text" class="form-control"
+                                        [(ngModel)]="legalDescArrays[req.path!][i].addressCity"
+                                        [name]="req.path + '-city-' + i">
+                                    <a href="#" class="source-link" (click)="onSourceClick($event)">SOURCE</a>
+                                </div>
+                            </div>
+
+                            <!-- Row 2: State | Zip -->
+                            <div class="d-flex gap-3">
+                                <div class="party-field-narrow">
+                                    <label class="required-field">State</label>
+                                    <select class="form-select"
+                                        [(ngModel)]="legalDescArrays[req.path!][i].addressState"
+                                        [name]="req.path + '-state-' + i">
+                                        <option value="">--</option>
+                                        <option *ngFor="let s of usStates" [value]="s">{{ s }}</option>
+                                    </select>
+                                    <a href="#" class="source-link" (click)="onSourceClick($event)">SOURCE</a>
+                                </div>
+                                <div class="party-field-narrow">
+                                    <label class="required-field">Zip</label>
+                                    <input type="text" class="form-control" maxlength="5"
+                                        [(ngModel)]="legalDescArrays[req.path!][i].addressZip"
+                                        [name]="req.path + '-zip-' + i" placeholder="#####">
+                                    <a href="#" class="source-link" (click)="onSourceClick($event)">SOURCE</a>
+                                </div>
+                            </div>
+
+                        </ng-container>
+
+                    </div>
+                </ng-container>
+
+                <div *ngIf="hasField('Party Count')">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <label for="partyCountInput" class="mb-0">Party count</label>
+                        <span *ngIf="partyCount === aiSuggestedPartyCount" class="ai-conf-tag">LOW-CONF</span>
+                        <button *ngIf="partyCount !== aiSuggestedPartyCount" type="button" class="ai-undo-btn"
+                            (click)="partyCount = aiSuggestedPartyCount">
+                            <span class="icon-history t-16" aria-hidden="true"></span>
+                            UNDO
+                        </button>
+                    </div>
+                    <input type="number" id="partyCountInput" class="form-control ai-prefilled" [(ngModel)]="partyCount" name="partyCount">
+                </div>
+
+                <div *ngIf="hasField('Transfer Tax')">
+                    <label for="transferTaxInput">Transfer tax</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="transferTaxAddon">$</span>
+                        </div>
+                        <input type="text" class="form-control" aria-label="Transfer tax"
+                            aria-describedby="transferTaxAddon" id="transferTaxInput" [(ngModel)]="transferTax" name="transferTax">
+                    </div>
+                </div>
+
+                <div *ngIf="hasField('Title Count')">
+                    <label for="titleCountInput">Title count</label>
+                    <input type="number" id="titleCountInput" class="form-control" [(ngModel)]="titleCount" name="titleCount">
+                </div>
+
+                <div *ngFor="let req of currencyRequirements">
+                    <label [for]="'currency-' + req.path">
+                        {{ req.label }}
+                        <span *ngIf="req.required === 'ALWAYS'" class="required-field"></span>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="text" class="form-control" [id]="'currency-' + req.path" [name]="'currency-' + req.path"
+                            [(ngModel)]="currencyValues[req.path!]">
+                    </div>
+                </div>
+
+                <table *ngIf="booleanRequirements.length > 0" class="bool-table w-100">
+                    <thead>
+                        <tr class="bool-table__header-row">
+                            <th class="bool-table__th bool-table__th--item">
+                                <span class="bool-table__header-label">Item</span>
+                            </th>
+                            <th class="bool-table__th bool-table__th--yesno">
+                                <span class="bool-table__header-label">Yes/No</span>
+                            </th>
+                            <th class="bool-table__th bool-table__th--source">
+                                <span class="bool-table__header-label">Source</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let req of booleanRequirements; let i = index" class="bool-table__data-row"
+                            [class.bool-table__data-row--alt]="i % 2 === 0">
+                            <td class="bool-table__td bool-table__td--item">
+                                <span class="bool-table__item-label">{{ req.label }}</span>
+                                <span *ngIf="req.required === 'ALWAYS'" class="text-danger ms-1"
+                                    aria-hidden="true">*</span>
+                            </td>
+                            <td class="bool-table__td bool-table__td--yesno">
+                                <div class="bool-table__radio-group">
+                                    <div class="bool-table__radio-option">
+                                        <input type="radio" [id]="'bool-yes-' + i" [name]="'bool-' + req.path"
+                                            class="form-check-input" value="yes"
+                                            [(ngModel)]="booleanValues[req.path!]">
+                                        <label [for]="'bool-yes-' + i" class="bool-table__radio-label">Yes</label>
+                                    </div>
+                                    <div class="bool-table__radio-option">
+                                        <input type="radio" [id]="'bool-no-' + i" [name]="'bool-' + req.path"
+                                            class="form-check-input" value="no"
+                                            [(ngModel)]="booleanValues[req.path!]">
+                                        <label [for]="'bool-no-' + i" class="bool-table__radio-label">No</label>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="bool-table__td bool-table__td--source">
+                                <span class="bool-table__source-dash">-</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div *ngFor="let req of stringRequirements">
+                    <label [for]="'string-' + req.path">{{ req.label }}</label>
+                    <textarea class="form-control" rows="3" [id]="'string-' + req.path" [name]="'string-' + req.path"
+                        [(ngModel)]="stringValues[req.path!]"></textarea>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+    <div class="card-footer bg-transparent">
+        <div class="d-flex align-items-center justify-content-end gap-2">
+            <button class="btn">Cancel</button>
+            <button class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+</div>

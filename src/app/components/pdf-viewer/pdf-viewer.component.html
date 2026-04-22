@@ -1,0 +1,52 @@
+<div class="pdf-container">
+
+    <ngx-extended-pdf-viewer 
+      *ngIf="documentUrl"
+      id="pdf-viewer" 
+      [(page)]="pageNumber"
+      [src]="documentUrl" 
+      [textLayer]="true"
+      [handTool]="false"
+      [showToolbar]="true"
+      [showSidebarButton]="true"
+      [showFindButton]="true"
+      [showPagingButtons]="true"
+      [showDrawEditor]="false"
+      [showStampEditor]="false"
+      [showTextEditor]="false"
+      [showZoomButtons]="false"
+      [showPresentationModeButton]="false"
+      [showOpenFileButton]="false"
+      [showPrintButton]="true"
+      [showDownloadButton]="true"
+      [showSecondaryToolbarButton]="false"
+      [showRotateButton]="false"
+      [showRotateCwButton]="false"
+      [showRotateCcwButton]="false"
+      [showHandToolButton]="false"
+      [showScrollingButtons]="false"
+      [showSpreadButton]="false"
+      [showPropertiesButton]="false"
+      [customFreeFloatingBar]="floatingZoombar"
+      [showFreeFloatingBar]="true"
+      [zoom]="zoom"
+            >
+    </ngx-extended-pdf-viewer>
+  
+</div>
+
+<ng-template #floatingZoombar>
+  <div class="">
+    <div>
+      <pdf-zoom-dropdown class="invisible"></pdf-zoom-dropdown>
+      <div class="btn-wrapper">
+        <button class="btn btn-icon" aria-label="Zoom in" (click)="zoomInAndOut('in')">
+          <span class="icon-add-circle" aria-hidden="true"></span>
+        </button>
+        <button class="btn btn-icon" aria-label="Zoom out" (click)="zoomInAndOut('out')">
+          <span class="icon-remove-circle" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>    
+  </div>
+</ng-template>

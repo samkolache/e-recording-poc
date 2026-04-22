@@ -1,0 +1,140 @@
+<div class="dashboard-page">
+  <div class="dashboard-table-wrapper">
+
+    <!-- Title Bar -->
+    <div class="table-title-bar">
+      <div class="title-left">
+        <span class="table-title">e-Recording</span>
+      </div>
+    </div>
+
+    <!-- Filter Header Row -->
+    <div class="filter-header-row">
+      <div class="col-checkbox">
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input">
+        </div>
+      </div>
+      <div class="col-flex filter-col">
+        <div class="col-label">ORDER NUMBER <span class="caret-icon">&#9662;</span></div>
+        <input type="text" class="form-control form-control-sm filter-input">
+      </div>
+      <div class="col-flex filter-col">
+        <div class="col-label">DOCUMENT NAME <span class="caret-icon">&#9662;</span></div>
+        <input type="text" class="form-control form-control-sm filter-input">
+      </div>
+      <div class="col-flex filter-col">
+        <div class="col-label">CLIENT NAME <span class="caret-icon">&#9662;</span></div>
+        <input type="text" class="form-control form-control-sm filter-input">
+      </div>
+      <div class="col-sm filter-col">
+        <div class="col-label">CLIENT ID <span class="caret-icon">&#9662;</span></div>
+        <input type="text" class="form-control form-control-sm filter-input">
+      </div>
+      <div class="col-sm filter-col">
+        <div class="col-label">STATE <span class="caret-icon">&#9662;</span></div>
+        <input type="text" class="form-control form-control-sm filter-input">
+      </div>
+      <div class="col-flex filter-col">
+        <div class="col-label">COUNTY <span class="caret-icon">&#9662;</span></div>
+        <input type="text" class="form-control form-control-sm filter-input">
+      </div>
+      <div class="col-flex filter-col">
+        <div class="col-label">SENT E-RECORD BY <span class="caret-icon">&#9662;</span></div>
+        <input type="text" class="form-control form-control-sm filter-input">
+      </div>
+      <div class="col-status filter-col">
+        <div class="col-label">AUTO-SUBMISSION STATUS <span class="caret-icon">&#9662;</span></div>
+        <select class="form-select custom-select-sm filter-input">
+          <option selected>All</option>
+          <option>Data Extraction Failed</option>
+          <option>Validation Failed</option>
+          <option>System Failed</option>
+          <option>Not Eligible</option>
+        </select>
+      </div>
+      <div class="col-flex filter-col">
+        <div class="col-label">LOCATION <span class="caret-icon">&#9662;</span></div>
+        <input type="text" class="form-control form-control-sm filter-input">
+      </div>
+      <div class="col-flex filter-col">
+        <div class="col-label">PROVIDER <span class="caret-icon">&#9662;</span></div>
+        <input type="text" class="form-control form-control-sm filter-input">
+      </div>
+    </div>
+
+    <!-- Data Rows -->
+    <div class="table-body">
+      @for (row of rows; track row.orderNumber + $index; let odd = $odd) {
+        <div class="table-data-row" [class.row-odd]="odd">
+          <div class="col-checkbox">
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input">
+            </div>
+          </div>
+          <div class="col-flex data-cell">
+            <a [routerLink]="row.route" class="order-link">{{ row.orderNumber }}</a>
+          </div>
+          <div class="col-flex data-cell">
+            <span class="cell-text">{{ row.sentERecord }}</span>
+          </div>
+          <div class="col-date data-cell">
+            <span class="cell-text">{{ row.actualDisbursementDate }}</span>
+          </div>
+          <div class="col-flex data-cell">
+            <span class="cell-text">{{ row.documentName }}</span>
+          </div>
+          <div class="col-flex data-cell">
+            <span class="cell-text">{{ row.clientName }}</span>
+          </div>
+          <div class="col-sm data-cell">
+            <span class="cell-text">{{ row.clientId }}</span>
+          </div>
+          <div class="col-sm data-cell">
+            <span class="cell-text">{{ row.state }}</span>
+          </div>
+          <div class="col-flex data-cell">
+            <span class="cell-text">{{ row.county }}</span>
+          </div>
+          <div class="col-flex data-cell">
+            <span class="cell-text">{{ row.sentERecordBy }}</span>
+          </div>
+          <div class="col-status data-cell d-flex align-items-center justify-content-center">
+            <span class="status-badge" [class.status-danger]="row.autoSubmissionStatusType === 'danger'" [class.status-gray]="row.autoSubmissionStatusType === 'gray'">
+              {{ row.autoSubmissionStatus | uppercase }}
+            </span>
+          </div>
+          <div class="col-flex data-cell">
+            <span class="cell-text">{{ row.location }}</span>
+          </div>
+          <div class="col-flex data-cell">
+            <span class="cell-text">{{ row.provider }}</span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Pagination Footer -->
+    <div class="pagination-footer">
+      <div class="items-per-page">
+        <select class="form-select custom-select-sm per-page-select">
+          <option selected>50</option>
+          <option>100</option>
+          <option>150</option>
+        </select>
+        <label>items per page</label>
+      </div>
+      <div class="showing-text">Show <strong>51-100</strong> of 150 Items</div>
+      <div class="pagination-wrapper">
+        <nav aria-label="Page navigation">
+          <ul class="pagination mb-0">
+            <li class="page-item"><a class="page-link" href="#">PREV</a></li>
+            <li class="page-item active" aria-current="page"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">NEXT</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+  </div>
+</div>

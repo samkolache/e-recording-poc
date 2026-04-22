@@ -1,0 +1,18 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.pdf-container {
+  height: 100%;
+  width: 100%;
+}
+
+
+::ng-deep pdf-first-page {
+  display: none !important;
+}
+
+::ng-deep pdf-last-page {
+  display: none !important;
+}

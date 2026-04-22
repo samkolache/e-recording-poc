@@ -1,4 +1,4 @@
-<main class="e-recording-container"> 
+<main class="e-recording-container">
   <div class="row h-100 g-0">
     <div class="col-md-6 h-100">
       @defer (on idle) {
@@ -6,11 +6,13 @@
       }
     </div>
     <div class="col-md-6 h-100 d-flex flex-column">
-      <app-e-recording-review-card (sourceClicked)="pdfPage = $event" />
+      <app-e-recording-review-card
+        presetState="MD"
+        presetCounty="prince-georges-county"
+        [docTabs]="tabs"
+        (sourceClicked)="pdfPage = $event"
+        class="flex-grow-1"
+      />
     </div>
   </div>
-
 </main>
-
-
-
